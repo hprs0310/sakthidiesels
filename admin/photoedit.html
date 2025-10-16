@@ -1,0 +1,317 @@
+﻿<? session_start();
+
+include "../include/db.html";
+
+?>
+<?
+
+if($_SESSION['admin']=='')
+
+{
+
+?>
+
+<script>window.location.href="website.html";
+
+</script>
+
+<?
+
+}
+
+else
+
+{
+
+?>
+
+
+
+<!--<script language="javascript">
+
+function validation()
+
+{
+
+var fname=document.form1;
+
+if(fname.phototitle.value=='')
+
+{
+
+alert("Please Enter Photo Title")
+
+fname.phototitle.focus();
+
+return false;
+
+}
+
+
+
+if(fname.photodescription.value=='')
+
+{
+
+alert("Please Enter Photo Description")
+
+fname.photodescription.focus();
+
+return false;
+
+}
+}
+
+</script>-->
+
+<?
+
+if(isset($_REQUEST['btdel']))
+
+{
+
+$id=$_REQUEST['id'];
+
+$del1="delete from sarojninaidu_gal where id='$id'";
+
+mysql_query($del1);
+
+$msg="Photo deleted";
+
+}
+
+?>
+
+<?
+
+if(isset($_REQUEST['edit']))
+
+{
+
+$id=$_REQUEST['id'];
+
+$phototitle=$_REQUEST['phototitle'];
+
+$photodescription=$_REQUEST['photodescription'];
+
+$movieimagename=$_FILES['photo']['name'];
+
+	$movieimagepath="photos/".$movieimagename;
+
+	move_uploaded_file($_FILES['photo']['tmp_name'],$movieimagepath);	
+
+
+
+
+
+$p1="select * from sarojninaidu_gal where phototitle='$phototitle'";
+
+$p2=mysql_query($p1);
+
+$prows=mysql_num_rows($p2);
+
+
+
+if($movieimagename=='')
+
+{
+
+$upd1="update sarojninaidu_gal set phototitle='$phototitle',photodescription='$photodescription' where id='$id'";
+
+mysql_query($upd1) or die ("update error:".mysql_error());
+
+$msg="Photo Details edited";
+
+}
+
+else
+
+{
+
+$upd1="update sarojninaidu_gal set phototitle='$phototitle',photodescription='$photodescription',photo='$movieimagename' where id='$id'";
+
+mysql_query($upd1) or die ("update error:".mysql_error());
+
+$msg="Photo Details edited";
+
+}
+
+
+
+}
+
+?>
+<?
+
+include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?
+include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+  <center><font color="#FF0000"><?=$msg;?></font></center>
+  	<table width="629" border="0" align="center" cellpadding="10" bgcolor="#FFFFFF" style="border:1px solid #000000">
+
+
+
+<tr bgcolor="#026FC2">
+
+
+
+<td colspan="2" align="center"><strong><font color="#FFFFFF">Edit Photos </font></strong></td>
+
+</tr>
+
+<form name="form2" action="photoedit.html">
+
+<tr>
+
+<td width="143">Select Photo Title  </td>
+
+<td width="345">
+
+<?
+
+$id=$_REQUEST['product'];
+
+$qq1="select * from sarojninaidu_gal where id='$id'";
+
+$qq2=mysql_query($qq1);
+
+$qq3=mysql_fetch_array($qq2);
+
+$id=$qq3['id'];
+
+$product=$qq3['phototitle'];
+
+
+
+$pp1="select * from sarojninaidu_gal where id!='$id'";
+
+$pp2=mysql_query($pp1);
+
+?>
+
+<select name="product" onchange="this.form.submit();">
+
+<option value="<?=$id;?>"><?=$product;?></option>
+
+<?
+
+while($pp3=mysql_fetch_array($pp2))
+
+{
+
+?><option value="<?=$pp3['id'];?>"><?=$pp3['phototitle'];?></option><?
+
+}
+
+?>
+
+</select></td>
+
+</tr>
+
+</form>
+
+<?
+
+if(isset($_REQUEST['product']))
+
+{
+
+$id=$_REQUEST['product'];
+
+$q1="select * from sarojninaidu_gal where id='$id'";
+
+$q2=mysql_query($q1);
+
+$q3=mysql_fetch_array($q2);
+
+$id=$q3['id'];
+
+$phototitle=$q3['phototitle'];
+
+$photodescription=$q3['photodescription'];
+
+$photo=$q3['photo'];
+
+?>
+
+<form name="form1" action="photoedit.html" onSubmit="return validation();" enctype="multipart/form-data" method="post">
+
+<tr>
+
+<td width="143">Photo Title </td>
+
+<td width="345"><input type="text" name="phototitle" value="<?=$q3['phototitle'];?>"></td>
+
+</tr>
+
+<tr>
+
+<td>Photo Description </td>
+
+<td><textarea name="photodescription"><?=$q3['photodescription'];?></textarea></td>
+
+</tr>
+
+<tr>
+
+<td valign="top">Photo</td>
+
+<td valign="top"><table cellpadding="0" cellspacing="0"><tr><td><input type="file" name="photo"></td>
+</tr><tr><td><img src="photos/<?=$q3['photo'];?>" width="100" height="100" /></td></tr></table></td>
+
+</tr>
+
+<!--<tr>
+
+<td>Distributor Name </td>
+
+<td><input type="text" name="distributor" value="<?//=//$q3['distributor'];?>"></td>
+
+</tr>-->
+
+
+
+
+
+
+<tr bgcolor="#026FC2">
+
+<td colspan="2" align="center">
+
+
+
+
+
+<input type="submit" name="edit" value="Update"  onClick="checkIt(this);"><input type="hidden" name="id" value="<?=$id;?>" /></td>
+
+</tr>
+
+</form>
+
+<?
+
+}
+
+?>
+
+</table>
+  <br /></td>
+</tr>
+</table>
+
+</body>
+</html>
+<?
+}
+?>
+
+

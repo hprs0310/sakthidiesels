@@ -1,0 +1,125 @@
+﻿<?php  session_start();
+include "../include/db.html";
+?>
+<?php 
+if($_SESSION['admin']=='')
+{
+?>
+<script>window.location.href="website.html";
+</script>
+<?php 
+}
+else
+{
+?>
+<?php
+if(isset($_REQUEST['submit']))
+{
+$pid=$_REQUEST['pid'];
+$user_id=$_REQUEST['user_id'];
+$photitle=$_REQUEST['photitle'];
+$errors= array();
+foreach($_FILES['files']['tmp_name'] as $key => $tmp_name ){
+$file_name = $key.$_FILES['files']['name'][$key];
+$file_size =$_FILES['files']['size'][$key];
+$file_tmp =$_FILES['files']['tmp_name'][$key];
+$file_type=$_FILES['files']['type'][$key];
+$file_category=$_FILES['category'][$key];	
+if($file_size > 2097152){
+$errors[]='File size must be less than 2 MB';
+}		
+$query="INSERT into vijaysakthi_photos (pid,USER_ID,FILE_NAME,FILE_SIZE,FILE_TYPE,FILE_CATEGORY,photitle) VALUES('$pid','$user_id','$file_name','$file_size','$file_type','$file_category','$photitle'); ";
+        $desired_dir="user_data";
+        if(empty($errors)==true){
+            if(is_dir($desired_dir)==false){
+                mkdir("$desired_dir", 0700);		// Create directory if it does not exist
+            }
+            if(is_dir("$desired_dir/".$file_name)==false){
+                move_uploaded_file($file_tmp,"$desired_dir/".$file_name);
+            }else{									// rename the file if another one exist
+                $new_dir="$desired_dir/".$file_name.time();
+                 rename($file_tmp,$new_dir) ;				
+            }
+		 mysql_query($query);			
+        }else{
+                print_r($errors);
+        }
+    }
+	if(empty($error)){
+		$msg="Details Added Successfully";
+	}
+}
+?>
+
+<?php 
+}
+
+?>
+<?php 
+
+include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?php 
+include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+
+<center><font color="#FF0000"><?php echo $msg;?></font></center>
+  	<table align="center" style="border:solid 1px #e4e4e4;" bgcolor="#CCCCCC" width="900"><tr><td>
+<form method='post' action='#' enctype="multipart/form-data">
+
+	
+	<table><tr>
+	  <td>
+	<strong>Photo Type </strong></td>
+	  <td>
+     <select name="pid" id="pid">
+		<option value="">--Select category--</option>
+		<?
+		$a1="select * from vijaysakthi_procategory";
+		$a2=mysql_query($a1);
+		while($a3=mysql_fetch_array($a2))
+		{
+		?>
+		<option value="<?php echo $a3['pid'];?>"><?php echo $a3['cname'];?></option>
+		<?
+		}
+		?>
+		</select></td>
+		
+	
+	
+	  
+	  <td>Photo Title</td>
+	  <td><textarea name="photitle" rows="5" cols="30"></textarea></td>
+	   <td>
+	  
+      
+      <strong>Image  </strong>: </td>
+	   <td>
+   <input type="file" name="files[]" multiple/></td><td></tr></table>
+	 
+	</div></div>
+	<input type="hidden" name="USER_ID" value="<?php echo $_REQUEST['USER_ID'];?>" />
+<input type='submit' name="submit" value="Submit"/ style="font-size:24px;">
+</form>
+</td></tr>
+<tr>
+  <td>
+    <p>&nbsp;</p>
+    <p>Photo Format : .jpg, png and gif
+    only Width : 450 x Height : 303 (pixels) </p>
+  </table>
+  <br /></td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

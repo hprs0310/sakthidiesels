@@ -1,0 +1,86 @@
+﻿<? session_start();
+include "../include/db.html";
+?>
+<?
+if(isset($_REQUEST['login']))
+{
+$username=$_REQUEST["uname"];
+$password=$_REQUEST["pword"];
+$sql1="select * from vijaysakthi_login where username='$username'";
+$result1=mysql_query($sql1);
+$res1=mysql_num_rows($result1);
+
+
+if($res1==1)
+{
+
+$sql2="select * from vijaysakthi_login where username='$username' and password='$password'";
+$result2=mysql_query($sql2);
+$res2=mysql_num_rows($result2);
+
+if($res2==1)
+{
+		 $sid=session_id();
+		 $sesid=substr($sid,8,6);
+		 $_SESSION['admin']=$sesid.date("m/d").$username;
+?>
+<script>window.location.href="prime.html"</script>
+<?
+}
+else
+{
+?>
+<script>
+alert("Incorrect Password");
+</script>
+<?
+}
+
+
+}
+else
+{
+
+?>
+
+<script>
+alert("incorrect Username");
+window.location.href="website.html";
+</script>
+
+<?
+
+}
+}
+?>
+
+
+
+<? include "header1.html"; ?>
+<tr>
+  <td colspan="3" valign="top" align="center"><br>
+  <form name="form1" method="post" action="website.html">
+<table border="0" align="center" cellpadding="10" bgcolor="#FFFFFF" style="border:1px solid #000000">
+<tr bgcolor="#029FCC">
+<td colspan="2" align="center"><strong><font color="#FFFFFF">Login</font></strong></td>
+</tr>
+<tr>
+<td>Username</td><td><input type="text" name="uname"></td>
+</tr>
+<tr>
+<td>Password</td><td><input type="password" name="pword"></td>
+</tr>
+<tr bgcolor="#029FCC">
+<td colspan="2" align="center"><input type="submit" name="login" value="Login"></td>
+</tr>
+</table>
+  </form>
+  
+  </td>
+</tr>
+</table>
+
+</body>
+</html>
+
+

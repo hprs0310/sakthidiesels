@@ -1,0 +1,104 @@
+﻿<?php session_start();
+
+include "../include/db.html";
+
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+
+<?php if($_SESSION['admin']=='')
+
+{
+
+?>
+
+<script>window.location.href="website.html";
+
+</script>
+
+<?php }
+
+else
+
+{
+
+?>
+
+
+<?php if ($_GET['action'] == 'delete' ) {  
+ 	 if ( !empty($_GET['USER_ID'])   ) { 
+		$strdelid = $_GET['USER_ID'];
+		$delete = mysql_query("DELETE from  vijaysakthi_photos where USER_ID = '$strdelid' ") ; 
+		$strsuccess =  "Delete Successful";
+	}
+}  
+?>
+<?php 
+$pid=$_REQUEST['pid'];
+$p1="select * from vijaysakthi_procategory";
+$p2=mysql_query($p1);
+$prows=mysql_num_rows($p2);
+
+
+?>
+<?php include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?php include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+  <center><font color="#FF0000"><?php echo $msg;?></font></center>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  	<h2 align="center">Photos View/Delete Section</h2>
+	<table height="65" border="1" cellpadding="5" cellspacing="0" class="blackbox" align="center">
+            <tr>
+              <td height="20" bgcolor="#ECECEC" class="paratext"><strong>ID</strong></td>
+			    <td bgcolor="#ECECEC" class="paratext"><strong>Photo Type </strong></td>
+				<td bgcolor="#ECECEC" class="paratext"><strong>Photo Title  </strong></td>
+               <td bgcolor="#ECECEC" class="paratext"><strong>Product image  </strong></td>
+			   
+				
+		      <td bgcolor="#ECECEC" class="paratext" align="center"><strong>Action </strong></td>
+            </tr>
+			 <?php  
+			$s1="select * from vijaysakthi_photos";
+$s2=mysql_query($s1);
+$rowcount=mysql_num_rows($s2);
+
+			 while($row = mysql_fetch_array($s2)){ ?>
+			 
+		   
+			 <tr bgcolor="#FFFFFF">
+              <td height="30" class="Partext1"><?php  echo $row['0']?></td>
+			  <td class="Partext1"><?php
+			  $photoid=$row['pid'];
+			  $aa1="select * from vijaysakthi_procategory where pid='$photoid'";
+		$aa2=mysql_query($aa1);
+		$aa3=mysql_fetch_array($aa2);
+			    echo $aa3['cname']?></td>
+				<td><?php echo $row['photitle'];?></td>
+              <td><img src="user_data/<?php echo $row['FILE_NAME'];?>" / width="70" height="70"></td>
+			 
+			  <td class="Partext1" align="center">
+              <a href="edit_photos.html?USER_ID=<?php echo $row['USER_ID'];?>">Edit</a> | <a href= "<?php $_SERVER['PHP_SELF']; ?>?action=delete&USER_ID=<?php echo $row['0']; ?>" 
+			  onclick="javascript: return confirm('Are you sure want to delete?') ; ">
+			  Delete</a>              </td>
+      </tr>
+			
+			<? } ?>
+    </table>
+  <br /></td>
+</tr>
+</table>
+
+</body>
+</html>
+<?php 
+}
+?>
+
+

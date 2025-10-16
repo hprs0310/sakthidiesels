@@ -1,0 +1,106 @@
+﻿<? session_start();
+include "../include/db.html";
+include("FCKeditor/fckeditor.html") ;
+?>
+<?
+if($_SESSION['admin']=='')
+{
+?>
+<script>window.location.href="website.html";
+</script>
+<?
+}
+else
+{
+?>
+
+<?
+if(isset($_REQUEST['submit']))
+{
+$page=$_REQUEST['page'];
+$title=$_REQUEST['title'];
+$content=$_REQUEST['content'];
+
+
+mysql_query("update cms set title='$title',description='$content' where page='$page'");
+
+?>
+<script>
+alert("Updated");
+</script>
+<?
+}
+?>
+
+
+<? 
+include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?
+include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+  
+  	<table cellspacing="0" cellpadding="5" width="40%">
+	<tr>
+	<th colspan="2">ESIC MADURAI</th>
+	</tr>
+	<?
+	$page=$_REQUEST['page'];
+	$a1="select * from cms where page='$page'";
+	$b1=mysql_query($a1);
+	$c1=mysql_fetch_array($b1);
+	
+	?>
+	<form method="post" action="<?=$_SERVER['PHP_SELF'];?>">
+	<tr>
+	<td>Page</td></tr><tr><td><input type="text" name="page" value="<?=$c1['page'];?>" readonly="" /></td>
+	</tr>
+	<tr>
+	<td>Title</td></tr><tr><td><input type="text" name="title" value="<?=$c1['title'];?>" /></td>
+	</tr>
+	<tr>
+	  <td>Description</td></tr>
+	  <tr>
+	  <td><?php
+					 
+					 $sBasePath = substr( $sBasePath, 0, strpos( $sBasePath, "index" ) ) ;
+					$det=$new2['description'];
+					
+					$oFCKeditor = new FCKeditor('content') ;
+					$oFCKeditor->BasePath	= $sBasePath."FCKeditor/";
+					$oFCKeditor->Value = $c1['description'];
+					$oFCKeditor->Create() ;
+					/*$oFCKeditor = new FCKeditor('content') ;
+					$oFCKeditor->BasePath = 'FCKeditor/';
+					if(!$content)
+						$oFCKeditor->Value = 'Default test in editor';
+					else
+						$oFCKeditor->Value = $content;
+					$oFCKeditor->Create() ;*/
+					
+					?></td>
+	  </tr>
+	<tr>
+	  
+	  <td><input type="submit" name="submit" value="Submit" /></td>
+	  </tr>
+	  </form>
+	</table>
+  
+  </td>
+</tr>
+</table>
+
+</body>
+</html>
+<?
+}
+?>
+
+

@@ -1,0 +1,126 @@
+﻿<? session_start();
+include "../include/db.html";
+?>
+<?
+if($_SESSION['admin']=='')
+{
+?>
+<script>window.location.href="website.html";
+</script>
+<?
+}
+else
+{
+?>
+
+<script language="javascript">
+function validation()
+{
+var fname=document.form1;
+if(fname.oldpwd.value=='')
+{
+alert("Please type old password")
+fname.oldpwd.focus();
+return false;
+}
+
+if(fname.newpwd.value=='')
+{
+alert("Please type newpassword");
+fname.newpwd.focus();
+return false;
+}
+
+
+if(fname.newpwd.value!=fname.repwd.value)
+{
+alert("Retype password is wrong");
+fname.repwd.focus();
+return false;
+}
+
+
+}
+</script>
+<?
+if(isset($_REQUEST['change']))
+{
+$oldpwd=$_REQUEST['oldpwd'];
+$newpwd=$_REQUEST['newpwd'];
+
+$aa1="select * from login";
+$bb1=mysql_query($aa1);
+$cc1=mysql_fetch_array($bb1);
+$dd1=$cc1['password'];
+
+if($oldpwd==$dd1)
+{
+
+$update1="update login set password='$newpwd' where password='$oldpwd'";
+$update2=mysql_query($update1);
+$msg="Password changed";
+?>
+<script>
+alert("Your password successfully changed. Click ok and login again");
+window.location.href="logout.html";
+</script>
+<?
+
+}
+else
+{
+$msg="Old password is wrong";
+}
+
+
+
+}
+?>
+
+<? 
+include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?
+include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+  
+  <table border="0" align="center" cellpadding="10" bgcolor="#FFFFFF" style="border:1px solid #000000">
+
+<tr bgcolor="#029FCC">
+
+<td colspan="2" align="center"><strong><font color="#FFFFFF">Change Password</font></strong></td>
+</tr>
+<form name="form1" action="admin.html" method="post" onSubmit="return validation();">
+<tr>
+<td>Old Password</td><td><input type="password" name="oldpwd"></td>
+</tr>
+<tr>
+<td>New Password</td><td><input type="password" name="newpwd"></td>
+</tr>
+<tr>
+<td>Retype Password</td><td><input type="password" name="repwd"></td>
+</tr>
+<tr bgcolor="#029FCC">
+<td colspan="2" align="center"><input type="submit" name="change" value="Change"></td>
+</tr>
+</form>
+</table>
+  
+  
+  </td>
+</tr>
+</table>
+
+</body>
+</html>
+<?
+}
+?>
+
+

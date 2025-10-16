@@ -1,0 +1,119 @@
+﻿<?php  session_start();
+include "../include/db.html";
+?>
+<?php 
+if($_SESSION['admin']=='')
+{
+?>
+<script>window.location.href="website.html";
+</script>
+<?php 
+}
+else
+{
+?>
+<?php 
+if(isset($_REQUEST['submit']))
+{
+$pid=$_REQUEST['pid'];
+$cname=$_REQUEST['cname'];
+$description=$_REQUEST['description'];
+
+while(list($key,$value) = each($_FILES[photo][name]))
+{
+if(!empty($value)){   // this will check if any blank field is entered
+$filename = $value;    // filename stores the value
+$drivename=$cname[$key];
+$drivename1=$description[$key];
+?>
+<?php 
+
+$filename=str_replace(" ","_",$filename);// Add _ inplace of blank space in file name, you can remove this line
+
+$add = "photocategory/$filename";   // upload directory path is set
+//echo $_FILES[images][type][$key];     // uncomment this line if you want to display the file type
+// echo "<br>";                             // Display a line break
+copy($_FILES[photo][tmp_name][$key], $add);     //  upload the file to the server
+$insert1="insert into vijaysakthi_procategory(pid,photo,cname,description) values ('$pid','$filename','$drivename','$drivename1')";
+mysql_query($insert1) or die(mysql_error());
+$msg="Details Added Successfully";
+}
+
+}
+}
+?>
+<?php 
+
+include "header1.html"; 
+?>
+<tr>
+<td colspan="5" height="5">
+<?php 
+include "dropdown.html"; 
+?>
+</td>
+</tr>
+<tr>
+  <td colspan="3" valign="top" align="center">
+
+  <script>
+function addEvent() {
+  var ni = document.getElementById('myDiv');
+  var numi = document.getElementById('theValue');
+  var num = (document.getElementById("theValue").value -1)+ 2;
+  numi.value = num;
+  var divIdName = "my"+num+"Div";
+  var newdiv = document.createElement('div');
+  newdiv.setAttribute("pid",divIdName);
+  newdiv.innerHTML = "<table><tr><td><strong>Photo/Video Type</strong></td><td><input type='text' name='cname[]' /></td><td><strong>Photo/Video Short Descripton</strong></td><td><textarea name='description[]' rows='5' cols='30'></textarea></td><td><strong>Photo/Video Type Image  </strong>: </td><td><input type='file' name='photo[]'  pid='photo[]'/></td></tr></table><table align='right'><tr><td><a href=\"javascript:;\" onclick=\"removeElement(\'"+divIdName+"\')\">Remove Photo Type Extra Options</a></td></tr></table>";
+  ni.appendChild(newdiv);
+}
+
+function removeElement(divNum) {
+  var d = document.getElementById('myDiv');
+  var olddiv = document.getElementById(divNum);
+  d.removeChild(olddiv);
+}
+</script>
+<center><font color="#FF0000"><?php echo $msg;?></font></center>
+  	<table align="center" style="border:solid 1px #e4e4e4;" bgcolor="#CCCCCC" width="900"><tr><td>
+<form method='post' action='#' enctype="multipart/form-data">
+
+	
+	<p>&nbsp;</p>
+	<div id="myDiv">
+	<table width="900"><tr>
+	  <td>
+	<strong>Photo/ Type </strong></td>
+	  <td>
+      <input type="text" name="cname[]" /></td>
+	   
+	  
+	
+	   <td>
+	  
+      
+      <strong>Photo/Video Type Image  </strong>: </td>
+	   <td>
+      <input type='file' name='photo[]'  id='photo[]'/></td></tr></table>
+	 
+	</div></div>
+	<input type="hidden" name="pid" value="<?php echo $_REQUEST['pid'];?>" />
+<input type='submit' name="submit" value="Submit"/>
+</form>
+</td></tr>
+<tr>
+  <td>
+Photo Format : .jpg, png and gif
+</table>
+  <br /></td>
+</tr>
+</table>
+
+</body>
+</html>
+<?php 
+}
+?>
+
+
